@@ -1,0 +1,172 @@
+.parent-cont{
+    min-height:100vh;
+}
+.sell-head{
+    color:darkorange;
+}
+.sell-nav{
+    width: 100%;
+    position: fixed;
+    z-index:999 !important;
+}
+.sell-cont-box{
+    width:100%;
+    padding:10px;
+    height:3.5rem;
+    background-color: white;
+    box-shadow: 2px 2px 5px;
+    position:fixed;
+    z-index:20;
+    transform: translateY(-0%); 
+    transition: transform 0.3s ease-in-out;
+}
+.sell-cont-box.show {
+    transform: translateY(100%); 
+}
+.sell-itm{
+    background-color: white;
+    height: 2rem;
+    text-align: center;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-bottom:solid transparent;
+    transform: border-color 0.5s;
+}
+.sell-itmcol{
+    border-bottom-color: darkorange;
+}
+.sell-itm:hover{
+    border-bottom-color: darkorange;
+}
+.main-box{
+    position: relative;
+    padding-top:16px;
+    z-index:0;
+}
+.main2-box{
+    border:1px solid gray;
+    border-radius: 10px;
+}
+.sell-drop{
+    > button{
+        width:16rem;
+    }
+    > .sell-drop-menu{
+        height:10rem;
+        overflow-y: auto;
+    }
+}
+.form-control{
+    border:1px solid;
+}
+.form-check-input{
+    border: 1px solid;
+}
+.rupee-icon{
+    margin-top:14px;
+}
+.price-format{
+    color:gray;
+}
+.property-inp{
+    border:1px solid white;
+    border-bottom-color: gray;
+    border-radius:0px;
+}
+.property-inp:focus{
+    border:1px solid white;
+    border-bottom-color: gray;
+    outline:none;
+}
+.photo-btn{
+    background-color: darkorange;
+    border:1px solid red;
+    width:60%;
+    border-radius: 10px;
+    cursor: pointer;
+}
+.sell-btn{
+    background-color: darkorange;
+    border-radius: 20px;
+    border:1px solid red;
+}
+.list-drop-menu{
+    max-height:200px;
+    overflow-y:auto;
+}
+.flat-ament{
+    gap:10px;
+}
+.btn-flatimg{
+    height:2.5rem;
+}
+.flat-img{
+    height:1.6rem;
+    width:2rem;
+    margin-right: 8px;
+}
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+.close-btn{
+    padding:0px !important;
+    border:1px solid white;
+    border-radius: 6px;
+    box-shadow: 0.5px 0.5px 0.5px;
+    outline:none;
+    width:1rem;
+    font-size: 14px;
+    margin-left:5px;
+    position: relative;
+    top:-18px;
+}
+.rent-cont{
+    min-height:100vh;
+}
+.rent-head{
+    color:darkorange;
+}
+.rent-main-box{
+    position: relative;
+    padding-top:16px;
+    z-index:0;
+}
+.rent-main2-box{
+    border:1px solid gray;
+    border-radius: 10px;
+}
+.rent-drop{
+    > button{
+        width:16rem;
+    }
+    > .sell-drop-menu{
+        height:10rem;
+        overflow-y: auto;
+    }
+}
+.rent-drop-menu{
+    height:10rem;
+    overflow-y: auto;
+}
+.rent-property-inp{
+    border:1px solid white;
+    border-bottom-color: gray;
+    border-radius:0px;
+}
+.rent-property-inp:focus{
+    border:1px solid white;
+    border-bottom-color: gray;
+    outline:none;
+}
+.react-datepicker-wrapper {
+    width:100%;
+    > .react-datepicker__input-container{
+        width:100%;
+        > input{
+            width: 100%;
+        }
+    }
+}

@@ -1,0 +1,154 @@
+.cont{
+    border: none !important;
+    height:50px;
+    padding: 0px;
+    background-color: darkorange;
+}
+.parent-cont{
+    background-color: #FFF5EE;
+    min-height:100vh;
+    max-width: 100%;
+}
+.logout-btn{
+    background-color: red;
+    border-radius: 4px;
+    border: none;
+}
+.user-box{
+    border:1px solid gray;
+    border-radius: 5px;
+    width:25%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.profile-img{
+    height:6rem;
+    width:6rem;
+}
+.prop-img{
+    height:2rem;
+    width:2rem;
+}
+.user-bar{
+    border:1px solid;
+    border-top: none;
+    box-shadow: 1px 1px 0px;
+    border-bottom-left-radius: 15px;
+    border-bottom-right-radius: 15px;
+    background-color: white;
+}
+.user-input{
+    border:1px solid;
+}
+.search-btn{
+    background-color: darkorange;
+    font-size: 18px;
+    width:4.3rem;
+    padding: 5px;
+    border-radius: 6px;
+    border: none;
+}
+.drop-btn{
+    border:1px solid !important;
+    color: black;
+    background-color: white;
+}
+.drop-btn:hover{
+    background-color: white !important;
+    color:black;
+}
+.btn.show{
+    background-color: white;
+    color:black;
+}
+.filter-box{
+    border-radius: 8px;
+    box-shadow: 0px 0px 2px;
+    width: 16rem;
+    > h4{
+        color: darkorange;
+    }
+}
+.accordion-button:not(.collapsed){
+    background-color: whitesmoke !important;
+}
+.mrange{
+    color:darkorange;
+}
+.apply-btn{
+    background-color: darkorange;
+    border-color: darkorange;
+    width:100%;
+    color:white;
+}
+.apply-btn:hover, .apply-btn:focus, .apply-btn:active {
+    background-color: darkorange;
+    border-color: red;
+    color: white;
+}
+.type-btn{
+    font-size: 14px;
+    border-radius: 20px;
+    border:1px solid gray;
+    text-align: left;
+}
+/* //user eidt */
+.signup-cont{
+    height:90vh;
+}
+.signup-box{
+    height: auto;
+    width: 40%;
+    border-radius: 8px;
+    border:1px solid gray;
+}
+.signup-text{
+    color:darkorange;
+}
+.signup-text:hover{
+    color:darkorange;
+}
+.signup-radio{
+    gap:2rem;
+}
+.signup-input{
+    width:100%;
+    border:1px solid white;
+    border-bottom-color: gray;
+}
+.signup-input:focus{
+    border:1px solid white;
+    border-bottom-color: gray;
+    outline:none;
+}
+.eye-icon{
+    cursor:pointer;
+}
+.phone-cont{
+    gap:0.5rem;
+    border-bottom:1px solid gray;
+    > .phone-input{
+        width:100%;
+        font-size: 16px;
+        border:none;
+    }
+    > .phone-input:focus{
+        border:none;
+        outline:none;
+    }
+}
+.check-label{
+    font-size: 13px;
+    font-family:Arial, Helvetica, sans-serif;
+    color:gray;
+}
+.signup-btn{
+    background-color: darkorange;
+    color:white;
+}
+.signup-btn:hover{
+    background-color: darkorange;
+    color:white;
+}
+.error-txt{
+    font-size: small;
+}
