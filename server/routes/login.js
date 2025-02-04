@@ -54,4 +54,44 @@ router.post('/logout', (req, res) => {
     res.status(200).json({ message: 'Logout successful' });
 });
 
+router.post('/register',async (req, res) => {
+    const token = req.cookies.adminToken;
+    if (!token) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const adminId = decoded.id;
+
+    const data = {...req.body};
+
+    try {
+      const existingAdmin = await Admin.findById(adminId);
+      if(existingAdmin.role !== 'Super Admin'){
+        return res.status(400).json({ message: 'Only Super Admin can Create Admin' });
+      }
+      const existingUser = await Admin.findOne({ email:data.email });
+      if (existingUser) {
+        return res.status(400).json({ message: 'Admin already exists' });
+      }
+      const hashedPassword = await bcrypt.hash(data.password, 10);
+      const newUser = new Admin({...data,password:hashedPassword,role:'Admin'});
+  
+      await newUser.save();
+      res.status(201).json(data);
+  
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Error during registration' });
+    }
+  });
+
+  router.get('/admins', async (req, res) => {
+    try {
+        const users = await Admin.find({role:'Admin'});
+        res.status(200).json(users);  // Return all users
+    } catch (error) {
+        res.status(500).json({ message: 'Error fetching users' });
+    }
+});
+
 module.exports = router;

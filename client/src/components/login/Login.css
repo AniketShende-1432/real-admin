@@ -7,6 +7,7 @@
     padding:20px;
     border-radius: 9px;
     box-shadow: 1px 1px 5px;
+    background-color: white;
 }
 .user-img{
     height:4rem;
@@ -27,4 +28,24 @@
     background-color: darkorange;
     border-radius: 6px;
     border:1px solid red;
+}
+.admin-main{
+    min-height:90vh;
+    max-height: auto;
+}
+.admin-box{
+    border:1px solid lightgray;
+    padding:20px;
+    border-radius: 9px;
+    box-shadow: 1px 1px 5px;
+    width:40%;
+    background-color: white;
+}
+.admin-input{
+    border:none !important;
+    border-radius: 0px;
+    border-bottom: 1px solid !important;
+}
+.admin-input:focus{
+    border-radius: 5px;
 }
