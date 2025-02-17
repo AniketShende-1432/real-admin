@@ -9,7 +9,7 @@ router.post("/login", async (req, res) => {
     try {
         const admin = await Admin.findOne({
             $or: [
-                { email: userid }, isNaN(userid) ? {} : { phone: Number(userid) }
+                { email: userid },  { phone: !isNaN(userid) ? Number(userid) : null }
             ]
           });
           if (!admin) {
@@ -37,7 +37,7 @@ router.post("/login", async (req, res) => {
             maxAge: 12 * 60 * 60 * 1000, // 1 hour in milliseconds
             path:'/'
         });
-        return res.status(200).json({token});
+        return res.status(200).json({role:admin.role,permissions:admin.permissions});
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: "Server Error" });
@@ -93,5 +93,59 @@ router.post('/register',async (req, res) => {
         res.status(500).json({ message: 'Error fetching users' });
     }
 });
+
+router.put('/updateadmin', async (req, res) => {
+  try {
+    const { password,currentpassword, ...update } = {...req.body};
+    let data ={};
+    const admin = await Admin.findOne({ email: update.email });
+      if (!admin) return res.status(404).json({ message: 'Admin not found' });
+      if(currentpassword != ''){
+        const isMatch = await bcrypt.compare(currentpassword, admin.password);
+        if (!isMatch) return res.status(400).json({ message: 'Incorrect Current password' });
+        const hashedPassword = await bcrypt.hash(password, 10);
+        data = {...update, password:hashedPassword};
+      }
+      if(currentpassword=='' || password==''){
+        data = {...update};
+      }
+      const updatedData = await Admin.findOneAndUpdate(
+        {email:update.email}, data, 
+        { new: true } // This returns the updated document
+    );
+      res.status(200).json({ message: 'Admin Updated Successfully' });
+  } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+router.delete('/delete-admin/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Admin.findByIdAndDelete(id);
+    res.status(200).json({ message: 'Admin Account deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to delete Account' });
+  }
+});
+
+router.put('/update-permissions/:id', async (req, res) => {
+  try {
+      const { id } = req.params;
+      const { permissions } = req.body;
+
+      const updatedAdmin = await Admin.findByIdAndUpdate(
+          id,
+          { $set: { permissions } }, // Update only the permissions field
+          { new: true }
+      );
+
+      if (!updatedAdmin) return res.status(404).json({ message: 'Admin not found' });
+      res.status(200).json({ message: 'Permissions updated successfully', updatedAdmin });
+  } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
 
 module.exports = router;

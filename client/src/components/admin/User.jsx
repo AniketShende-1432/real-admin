@@ -1,15 +1,19 @@
 import { React, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from "axios";
 import { toast } from 'react-toastify';
 
 const User = () => {
-  
+
   const navigate = useNavigate();
+  const permissions = useSelector((state) => state.auth.permissions);
+  console.log(permissions);
+
   const [users, setUsers] = useState([]);
-  const [filter,setFilter] = useState({
-    type:'',
-    search:''
+  const [filter, setFilter] = useState({
+    type: '',
+    search: ''
   })
   useEffect(() => {
     const fetchUsers = async () => {
@@ -55,7 +59,7 @@ const User = () => {
 
   const handleSearch = async () => {
     const base_url = import.meta.env.VITE_API_BASE_URL;
-    
+
     try {
       // Make the API call to fetch filtered users
       const response = await axios.get(`${base_url}/api/v5/filterusers`, {
@@ -66,14 +70,14 @@ const User = () => {
         withCredentials: true, // Include credentials (cookies)
       });
       console.log(response.data); // This can be used to update the UI with filtered users
-      setUsers(response.data); 
+      setUsers(response.data);
     } catch (error) {
       console.error('Error fetching filtered users:', error);
     }
   };
 
   const handleEdit = (user) => {
-    navigate(`/admin/user-edit`,{state: user});
+    navigate(`/admin/user-edit`, { state: user });
   };
 
   return (
@@ -81,15 +85,15 @@ const User = () => {
       <div className='user-bar d-flex justify-content-center align-items-center p-2'>
         <div className="input-group w-50">
           <button className="btn btn-outline-secondary dropdown-toggle drop-btn" type="button" data-bs-toggle="dropdown" aria-expanded="false">{filter.type || "UserType"}</button>
-          <ul className="dropdown-menu drop-item" style={{cursor:'pointer'}}>
-            <li><a className="dropdown-item"  onClick={() => setFilter((prev) => ({ ...prev, type: 'Agent' }))}>Agent</a></li>
-            <li><a className="dropdown-item"  onClick={() => setFilter((prev) => ({ ...prev, type: 'Builder' }))}>Builder</a></li>
-            <li><a className="dropdown-item"  onClick={() => setFilter((prev) => ({ ...prev, type: 'Buyer/Owner/Tenant' }))}>Buyer/Owner/Tenant</a></li>
+          <ul className="dropdown-menu drop-item" style={{ cursor: 'pointer' }}>
+            <li><a className="dropdown-item" onClick={() => setFilter((prev) => ({ ...prev, type: 'Agent' }))}>Agent</a></li>
+            <li><a className="dropdown-item" onClick={() => setFilter((prev) => ({ ...prev, type: 'Builder' }))}>Builder</a></li>
+            <li><a className="dropdown-item" onClick={() => setFilter((prev) => ({ ...prev, type: 'Buyer/Owner/Tenant' }))}>Buyer/Owner/Tenant</a></li>
           </ul>
           <input type="text" className="form-control user-input" name='search'
-          value={filter.search}
-          onChange={handleInputChange}
-          placeholder='Phone/Email/Name' />
+            value={filter.search}
+            onChange={handleInputChange}
+            placeholder='Phone/Email/Name' />
         </div>
         <button className='search-btn text-white ms-2' onClick={handleSearch}>search</button>
       </div>
@@ -112,18 +116,20 @@ const User = () => {
                 <td>{user.usertype}</td>
                 <td>{user.phone}</td>
                 <td>
-                  <button
-                    className="btn btn-info btn-sm me-2"
-                    onClick={() => handleEdit(user)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="btn btn-danger btn-sm"
-                    onClick={() => handleDelete(user._id)}
-                  >
-                    Delete
-                  </button>
+                  {permissions.canEdit &&
+                    <button
+                      className="btn btn-info btn-sm me-2"
+                      onClick={() => handleEdit(user)}
+                    >
+                      Edit
+                    </button>}
+                  {permissions.canDelete &&
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => handleDelete(user._id)}
+                    >
+                      Delete
+                    </button>}
                 </td>
               </tr>
             ))}

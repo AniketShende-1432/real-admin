@@ -1,10 +1,13 @@
 import { React, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 import axios from "axios";
 import { toast } from 'react-toastify';
 
 const Property = () => {
   const navigate = useNavigate();
+  const permissions = useSelector((state) => state.auth.permissions);
+
   const [property, setproperty] = useState([]);
   const [filterdata, setFilterdata] = useState({
     type: '', city: '', budget: 0, rentBudget: 0, propertyType: '', area: 0, status: ''
@@ -68,7 +71,7 @@ const Property = () => {
     setFilterdata((prevData) => ({
       ...prevData,
       budget: newValue, // Update the budget field
-      rentBudget:0,
+      rentBudget: 0,
     }));
   };
 
@@ -98,7 +101,7 @@ const Property = () => {
   const handleStatusClick = (value) => {
     setFilterdata((prevState) => ({
       ...prevState,
-      status:value
+      status: value
     }));
   }
   const achange = (e) => {
@@ -123,7 +126,7 @@ const Property = () => {
   }
 
   const handlePropEdit = (property) => {
-    navigate(`/admin/edit-property`,{state: property});
+    navigate(`/admin/edit-property`, { state: property });
   };
   return (
     <div>
@@ -187,7 +190,7 @@ const Property = () => {
                       <input
                         type="range" className="form-range" min="0" max="100000" step="1000" id="rentBudgetRange"
                         value={filterdata.rentBudget} // Default value if not set
-                        onChange={(e) => setFilterdata({ ...filterdata, rentBudget: e.target.value,budget:0 })}
+                        onChange={(e) => setFilterdata({ ...filterdata, rentBudget: e.target.value, budget: 0 })}
                       />
                     </div>
                   </div>
@@ -238,7 +241,7 @@ const Property = () => {
                 </h2>
                 <div id="flush-collapseFive" className="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                   <div className="accordion-body">
-                  <button className='btn btn-light type-btn mt-2' onClick={() => handleStatusClick("Active")}
+                    <button className='btn btn-light type-btn mt-2' onClick={() => handleStatusClick("Active")}
                       style={filterdata.status === 'Active' ? { border: "1px solid darkorange", backgroundColor: "#FFE5B4" } : {}}>+ Active</button>
                     <button className='btn btn-light type-btn mt-2 ms-1' onClick={() => handleStatusClick("Inactive")}
                       style={filterdata.status === 'Inactive' ? { border: "1px solid darkorange", backgroundColor: "#FFE5B4" } : {}}>+ Inactive</button>
@@ -274,18 +277,22 @@ const Property = () => {
                   <td>{property.type === 'Plot' ? property.plotArea : property.carpetArea}</td>
                   <td>{property.type === 'PG' || property.type === 'Rent' ? `${formatPrice(property.monthlyRent)}/Month` : formatPrice(property.price)}</td>
                   <td>
-                    <button
-                      className="btn btn-info btn-sm me-2"
-                      onClick={() => handlePropEdit(property)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handlePropDelete(property._id, property.type)}
-                    >
-                      Delete
-                    </button>
+                    {permissions.canEdit &&
+                      <button
+                        className="btn btn-info btn-sm me-2"
+                        onClick={() => handlePropEdit(property)}
+                      >
+                        Edit
+                      </button>
+                    }
+                    {permissions.canDelete &&
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handlePropDelete(property._id, property.type)}
+                      >
+                        Delete
+                      </button>
+                    }
                   </td>
                 </tr>
               ))}

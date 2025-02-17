@@ -5,7 +5,10 @@ import { toast } from 'react-toastify';
 import "../Admin.css";
 
 const Alist = () => {
+
+  const navigate = useNavigate();
   const [admins, setadmins] = useState([]);
+
   useEffect(() => {
     const fetchUsers = async () => {
       const base_url = import.meta.env.VITE_BASE_URL;
@@ -20,6 +23,44 @@ const Alist = () => {
     };
     fetchUsers();
   }, []);
+
+  const handleEdit = (admin) => {
+    navigate('/admin/admin-create', { state: { admin, mode: 'edit' } });
+  }
+  const handleDelete = async (id) => {
+    const base_url = import.meta.env.VITE_BASE_URL;
+    try {
+      // Make the API call to delete the user by ID
+      await axios.delete(`${base_url}/api/v1/delete-admin/${id}`).then((response) => {
+        if (response.status === 200) {
+          toast.success(response.data.message);
+        }
+      });
+      setadmins(prevUsers => prevUsers.filter(admin => admin._id !== id));
+
+    } catch (error) {
+      toast.error('Error deleting user:');
+    }
+  };
+  const handlePermission = async (admin, permissionType) => {
+    try {
+      const updatedPermissions = {
+        ...admin.permissions,
+        [permissionType]: !admin.permissions[permissionType], // Toggle value dynamically
+      };
+      const base_url = import.meta.env.VITE_BASE_URL;
+      await axios.put(`${base_url}/api/v1/update-permissions/${admin._id}`, { permissions: updatedPermissions }).then((response) => {
+        if (response.status === 200) {
+          setadmins((prevAdmins) =>
+            prevAdmins.map((a) => (a._id === admin._id ? { ...a, permissions: updatedPermissions } : a))
+          );
+        }
+      });
+    } catch (error) {
+      console.error(`Error updating ${permissionType}:`, error);
+      toast.error(`Failed to update ${permissionType}`);
+    }
+  };
 
   return (
     <div>
@@ -46,20 +87,22 @@ const Alist = () => {
                     <td>
                       <button
                         className="btn btn-info btn-sm me-2"
-                        onClick={() => handleEdit(user)}
+                        onClick={() => handleEdit(admin)}
                       >
                         Edit
                       </button>
                       <button
                         className="btn btn-danger btn-sm"
-                        onClick={() => handleDelete(user._id)}
+                        onClick={() => handleDelete(admin._id)}
                       >
                         Delete
                       </button>
                     </td>
                     <td>
-                      <button className='btn btn-danger btn-sm me-2'>Edit</button>
-                      <button className='btn btn-danger btn-sm'>Delete</button>
+                      <button className={`btn ${admin.permissions?.canEdit ? 'btn-success' : 'btn-danger'} btn-sm me-2`}
+                        onClick={() => handlePermission(admin, 'canEdit')}>Edit</button>
+                      <button className={`btn ${admin.permissions?.canDelete ? 'btn-success' : 'btn-danger'} btn-sm`}
+                        onClick={() => handlePermission(admin, 'canDelete')}>Delete</button>
                     </td>
                   </tr>
                 ))}

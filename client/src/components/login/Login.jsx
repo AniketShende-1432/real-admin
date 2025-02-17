@@ -3,10 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import login from "../../assets/login.jpg"
 import user from "../../assets/user.png";
 import axios from "axios";
+import { useDispatch } from 'react-redux';
+import { authActions } from '../../store/authSlice';
 import "./Login.css";
 import { toast } from 'react-toastify';
 
 const Login = () => {
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [adminData,setadminData] = useState({
         userid:'',password:''
@@ -43,6 +46,8 @@ const Login = () => {
             if (response.data.message) {
                 toast.error(response.data.message);
             } else {
+                dispatch(authActions.setPermissions(response.data));
+                console.log(response.data);
                 sessionStorage.setItem("showLoginToast", "true");
                 sessionStorage.setItem("login", "true");
                 setadminData({ userid:'',password:''});

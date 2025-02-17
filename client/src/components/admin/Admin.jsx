@@ -1,12 +1,16 @@
-import {React,useEffect} from 'react'
-import { Link, useNavigate,Outlet } from 'react-router-dom';
+import { React, useEffect } from 'react'
+import { Link, useNavigate, Outlet } from 'react-router-dom';
 import axios from "axios";
+import { useSelector,useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 import "./Admin.css";
+import { authActions } from '../../store/authSlice';
 
 const Admin = () => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const role = useSelector((state) => state.auth.role);
 
     useEffect(() => {
         // Check if login toast should be shown
@@ -20,12 +24,13 @@ const Admin = () => {
         }
     }, []);
 
-    const handlelogout = async()=>{
+    const handlelogout = async () => {
         try {
             const base_url = import.meta.env.VITE_BASE_URL;
             const response = await axios.post(`${base_url}/api/v1/logout`, {}, { withCredentials: true });
             if (response.status === 200) {
-                toast.success("Log Out Successfully",{
+                dispatch(authActions.clearPermissions());
+                toast.success("Log Out Successfully", {
                     onClose: () => {
                         sessionStorage.removeItem("login");
                         navigate('/');
@@ -48,9 +53,11 @@ const Admin = () => {
                             <li className="nav-item ms-1">
                                 <Link className="nav-link active text-white small" aria-current="page">Home</Link>
                             </li>
-                            <li className="nav-item ms-1">
-                                <Link className="nav-link active text-white small" aria-current="page" to='/admin/manage-admin'>Manage Admin</Link>
-                            </li>
+                            {role === 'Super Admin' &&
+                                <li className="nav-item ms-1">
+                                    <Link className="nav-link active text-white small" aria-current="page" to='/admin/manage-admin'>Manage Admin</Link>
+                                </li>
+                            }
                             <li className="nav-item ms-2">
                                 <Link className="nav-link active text-white small" aria-current="page" to="/admin">Manage User</Link>
                             </li>

@@ -21,6 +21,10 @@ const adminSchema = new mongoose.Schema({
         type :String,
         required:true,
     },
+    permissions: {
+        canEdit: { type: Boolean, default: false },
+        canDelete: { type: Boolean, default: false },
+    },
     status: {
         type: String,
         enum: ['active', 'blocked'],
