@@ -75,6 +75,27 @@ const User = () => {
       console.error('Error fetching filtered users:', error);
     }
   };
+  const handleDownload = async () => {
+    const base_url = import.meta.env.VITE_API_BASE_URL;
+    try {
+      const response = await axios.get(`${base_url}/api/v5/export-userexcel`, {
+        responseType: "blob", // Important for binary data
+        withCredentials:true,
+      });
+      const blob = new Blob([response.data]);
+      const url = window.URL.createObjectURL(blob);
+      // Create a temporary <a> element to trigger download
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "users.xlsx"; // Set file name
+      link.click(); // Trigger download
+      // Clean up memory
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+      alert("Failed to download the file. Please try again.");
+    }
+  };
 
   const handleEdit = (user) => {
     navigate(`/admin/user-edit`, { state: user });
@@ -98,43 +119,46 @@ const User = () => {
         <button className='search-btn text-white ms-2' onClick={handleSearch}>search</button>
       </div>
       <div className='d-flex flex-column align-items-center'>
-        <table className="table table-striped table-bordered w-auto mt-4">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Type</th>
-              <th>Phone</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users.map((user, index) => (
-              <tr key={index}>
-                <td>{user.name}</td>
-                <td>{user.email}</td>
-                <td>{user.usertype}</td>
-                <td>{user.phone}</td>
-                <td>
-                  {permissions.canEdit &&
-                    <button
-                      className="btn btn-info btn-sm me-2"
-                      onClick={() => handleEdit(user)}
-                    >
-                      Edit
-                    </button>}
-                  {permissions.canDelete &&
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(user._id)}
-                    >
-                      Delete
-                    </button>}
-                </td>
+        <div className='mt-4 d-flex flex-column'>
+          <button className='ms-auto btn btn-success' onClick={handleDownload}>Download File</button>
+          <table className="table table-striped table-bordered w-auto mt-2">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Type</th>
+                <th>Phone</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {users.map((user, index) => (
+                <tr key={index}>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.usertype}</td>
+                  <td>{user.phone}</td>
+                  <td>
+                    {permissions.canEdit &&
+                      <button
+                        className="btn btn-info btn-sm me-2"
+                        onClick={() => handleEdit(user)}
+                      >
+                        Edit
+                      </button>}
+                    {permissions.canDelete &&
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDelete(user._id)}
+                      >
+                        Delete
+                      </button>}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

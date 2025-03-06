@@ -128,6 +128,23 @@ const Property = () => {
   const handlePropEdit = (property) => {
     navigate(`/admin/edit-property`, { state: property });
   };
+  
+  const handleStatus = async (id, currentStatus, type) => {
+    const newStatus = currentStatus === "Active" ? "Inactive" : "Active";
+    const data = {status:newStatus,propertyType:type};
+    const base_url = import.meta.env.VITE_API_BASE_URL;
+    try {
+      // Make the API call to delete the property by ID and type
+      const response = await axios.put(`${base_url}/api/v4/property-status/${id}`,data,{ withCredentials: true, });
+
+      if (response.data.message) {
+        setproperty(prevProperties =>  prevProperties.map((prop) => prop._id === id ? { ...prop, status: newStatus } : prop));
+      }
+    } catch (error) {
+      toast.error('Error changing property status');
+    }
+  };
+  
   return (
     <div>
       <div className='user-bar d-flex justify-content-center align-items-center p-2'>
@@ -293,6 +310,7 @@ const Property = () => {
                         Delete
                       </button>
                     }
+                    <button className={`btn ${property.status === 'Active' ? 'btn-success' : 'btn-secondary'} btn-sm ms-1`} onClick={()=>handleStatus(property._id, property.status,property.type)}>{property.status === 'Active' ? 'Active' : 'Inactive'}</button>
                   </td>
                 </tr>
               ))}
