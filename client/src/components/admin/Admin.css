@@ -39,11 +39,23 @@
 .user-input{
     border:1px solid;
 }
+.coin-input{
+    border:1px solid;
+    width:6rem;
+    height:2rem;
+}
 .search-btn{
     background-color: darkorange;
     font-size: 18px;
     width:4.3rem;
     padding: 5px;
+    border-radius: 6px;
+    border: none;
+}
+.coin-btn{
+    background-color: darkorange;
+    font-size: 15px;
+    width:4.3rem;
     border-radius: 6px;
     border: none;
 }

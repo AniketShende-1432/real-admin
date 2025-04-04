@@ -8,9 +8,10 @@ const User = () => {
 
   const navigate = useNavigate();
   const permissions = useSelector((state) => state.auth.permissions);
-  console.log(permissions);
 
   const [users, setUsers] = useState([]);
+  const [coinValues, setCoinValues] = useState({});
+  console.log(coinValues);
   const [filter, setFilter] = useState({
     type: '',
     search: ''
@@ -80,7 +81,7 @@ const User = () => {
     try {
       const response = await axios.get(`${base_url}/api/v5/export-userexcel`, {
         responseType: "blob", // Important for binary data
-        withCredentials:true,
+        withCredentials: true,
       });
       const blob = new Blob([response.data]);
       const url = window.URL.createObjectURL(blob);
@@ -94,6 +95,37 @@ const User = () => {
     } catch (error) {
       console.error("Error downloading file:", error);
       alert("Failed to download the file. Please try again.");
+    }
+  };
+
+  const handleCoinChange = (userId, value) => {
+    setCoinValues((prev) => ({
+      ...prev,
+      [userId]: value, // Update coin value for specific user
+    }));
+  };
+  const handleCoinUpdate = async (userId) => {
+    const base_url = import.meta.env.VITE_API_BASE_URL;
+    try {
+      const response = await axios.put(`${base_url}/api/v5/${userId}/add-coins`, {
+        coin: coinValues[userId], // Send updated coin value
+      }, {
+        withCredentials: true,
+      });
+
+      if (response.status === 200) {
+        const coinuser = response.data.user;
+        setUsers(users.map(user => 
+          user._id === userId ? { ...user, coins: coinuser.coins } : user
+        ));
+        toast.success('Coin Updated Successfully !');
+        setCoinValues((prev) => ({
+          ...prev,
+          [userId]: '', // Update coin value for specific user
+        }));
+      }
+    } catch (error) {
+      console.error("Error updating coin:", error);
     }
   };
 
@@ -128,7 +160,9 @@ const User = () => {
                 <th>Email</th>
                 <th>Type</th>
                 <th>Phone</th>
+                <th>Coins</th>
                 <th>Actions</th>
+                <th>Add Coins</th>
               </tr>
             </thead>
             <tbody>
@@ -138,6 +172,7 @@ const User = () => {
                   <td>{user.email}</td>
                   <td>{user.usertype}</td>
                   <td>{user.phone}</td>
+                  <td>{user.coins}</td>
                   <td>
                     {permissions.canEdit &&
                       <button
@@ -154,13 +189,20 @@ const User = () => {
                         Delete
                       </button>}
                   </td>
+                  <td className='d-flex'>
+                    <input type="text" className="form-control coin-input" name='coin'
+                      value={coinValues[user._id]}
+                      onChange={(e) => handleCoinChange(user._id, e.target.value)}
+                       />
+                  <button className='coin-btn text-white ms-2' onClick={()=>handleCoinUpdate(user._id)}>Submit</button>
+                </td>
                 </tr>
               ))}
-            </tbody>
-          </table>
-        </div>
+          </tbody>
+        </table>
       </div>
     </div>
+    </div >
   )
 }
 
